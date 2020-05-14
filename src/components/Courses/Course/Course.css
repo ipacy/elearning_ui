@@ -1,0 +1,50 @@
+.IndCourse {
+    width: 250px;
+
+    text-align: center;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 3px #ccc;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.IndCourse:hover,
+.IndCourse:active {
+    background-color: #C0DDF5;
+}
+
+.IndCourseBody {
+    padding: 16px;
+    box-sizing: border-box;
+    margin: 10px;
+}
+
+.Author {
+    margin: 16px 0;
+    color: #ccc;
+}
+
+.fa {
+    font-size: 15px;
+}
+
+.checked {
+    color: orange !important;
+}
+
+
+.root {
+    max-width: 345px
+}
+
+.avatar {
+    background-color: red
+}
+.media{
+    height: 0px;
+    padding-top: 56.25%;
+}
+
+.myTitleWhite .MuiTypography-colorTextSecondary{
+    color: white !important;
+}

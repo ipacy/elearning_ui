@@ -1,0 +1,24 @@
+.mySearchBar {
+    width: 100%;
+}
+
+@media (min-width: 500px) and (min-height: 400px) {
+    .mySearchBar {
+        width: 350px !important;
+    }
+}
+
+@media (min-width: 500px) and (min-height: 401px) {
+    .mySearchBar {
+        width: 50rem !important;
+        right: 37rem !important;
+        height: 1rem;
+    }
+}
+
+@media (min-width: 1000px) and (min-height: 700px) {
+    .mySearchBar {
+        width: 700px!important;
+    }
+}
+
