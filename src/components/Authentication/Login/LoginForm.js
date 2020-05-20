@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 // import {Nav, Navbar} from "react-bootstrap";
 import {Button} from "react-bootstrap";
+import {PrimaryButton, DefaultButton, TextField} from '@fluentui/react';
 
 const loginForm = (props) => {
     const oWarning = (props.error) ? <Alert variant="danger" dismissible>
@@ -35,25 +36,40 @@ const loginForm = (props) => {
                     <div className="col-md-12">
                         <form className="needs-validation" onSubmit={props.onSubmit}>
                             <div className="mb-3">
-                                <label htmlFor="email">Email</label>
-                                <input type="email" className="form-control" id="email"
+                                {/*<label htmlFor="email">Email</label>*/}
+                                {/*<input type="email" className="form-control" id="email"
                                        placeholder="you@example.com"
                                        required={true}
                                        name="email"
                                        value={props.email || ""}
-                                       onChange={props.change}/>
+                                       onChange={props.change}/>*/}
+                                <TextField htmlFor="email"
+                                           label="Email"
+                                           placeholder="Title"
+                                           required={true}
+                                           name="email"
+                                           value={props.email || ""}
+                                           onChange={props.change}/>
                                 <div className="invalid-feedback">
                                     Please enter a valid email address for sign-in.
                                 </div>
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="password">Password</label>
+                                {/* <label htmlFor="password">Password</label>
                                 <input type="password" className="form-control" id="password"
                                        placeholder="******"
                                        required aria-describedby="passwordHelpInline"
                                        name="password"
                                        value={props.password || ""}
-                                       onChange={props.change}/>
+                                       onChange={props.change}/>*/}
+                                <TextField htmlFor="password"
+                                           label="Password"
+                                           type='password'
+                                           placeholder="Title"
+                                           required={true}
+                                           name="password"
+                                           value={props.password || ""}
+                                           onChange={props.change}/>
                                 <small id="passwordHelpInline" className="text-muted">
                                     Must be 8-20 characters long.
                                 </small>
@@ -61,17 +77,23 @@ const loginForm = (props) => {
                                     Please enter password
                                 </div>
                             </div>
-                            <button className="btn btn-outline-primary btn-light btn-lg btn-block"
+                            <DefaultButton
+                                type="submit"> Login
+                            </DefaultButton>
+                           {/* <button className="btn btn-outline-primary btn-light btn-lg btn-block"
                                     type="submit"> Login
-                            </button>
+                            </button>*/}
                         </form>
                     </div>
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button className="btn btn-outline-danger" onClick={props.onClose} color="primary">
+                <PrimaryButton onClick={props.onClose}>
                     Cancel
-                </Button>
+                </PrimaryButton>
+              {/*  <Button className="btn btn-outline-danger" onClick={props.onClose} color="primary">
+                    Cancel
+                </Button>*/}
             </DialogActions>
         </Dialog>
 

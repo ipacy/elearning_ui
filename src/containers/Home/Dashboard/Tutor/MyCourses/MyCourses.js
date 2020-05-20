@@ -327,7 +327,7 @@ class MyCourses extends Component {
                                 appliedClass: {
                                     topic: "nav-link disabled",
                                     upload: "nav-link active",
-                                    lecture: "nav-link disabled",
+                                    lecture: "nav-link",
                                     topicdiv: "tab-pane fade",
                                     uploaddiv: "tab-pane fade show active",
                                     lecturediv: "tab-pane fade"
@@ -408,33 +408,35 @@ class MyCourses extends Component {
     onBatchLectureSubmit = (event) => {
         event.preventDefault()
 
-        let lectureList = {...this.state.lectureList};
+        let lectureList = [...this.state.lectureList];
 
 
         this.setState({lectureList: lectureList});
-        let sendData = lectureList
-        // debugger;
 
-        let sample = {
-            "lectures": [
-                {
-                    "title": "lec5",
-                    "description": "",
-                    "duration": 10,
-                    "topic": 1,
-                    "res_file": 1
-                }
-            ]
+
+        let sendData = [];
+        for (let i = 0; i < lectureList.length; i++) {
+            let obj = {
+                "title": lectureList[i].title,
+                "description": lectureList[i].description,
+                "duration": parseInt(lectureList[i].duration),
+                "topic": this.state.topicDetails.id,
+                "res_file": lectureList[i].res_file
+            }
+            sendData.push({...obj})
+        }
+        debugger;
+        let finalData = {
+            "lectures": sendData
         }
 
-
-      /*  axios.post('nested/create/', sendData)
+        axios.post('nested/create/', finalData)
             .then(response => {
                 debugger;
             }).catch(error => {
             debugger;
             console.log(error);
-        });*/
+        });
     }
 
     handleLectureChange = (event) => {

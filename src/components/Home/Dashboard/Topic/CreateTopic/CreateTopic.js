@@ -28,7 +28,7 @@ const createTopic = (props) => {
     if (!!lectureFile) {
         lecfiles = lectureFile.map(
             cat => {
-                return <option key={cat.id} value={cat.file}>{cat.file}</option>
+                return <option key={cat.id} value={cat.id}>{cat.file}</option>
             });
     }
     let oItems = [];
@@ -141,6 +141,11 @@ const createTopic = (props) => {
                                 <TextField label="Description" multiline rows={3}
                                            name="description"
                                            value={props.singleLecture.description || ""}
+                                           onChange={props.onLectureChange}/>
+
+                                <TextField label="Duration"
+                                           name="duration"
+                                           value={props.singleLecture.duration || ""}
                                            onChange={props.onLectureChange}/>
 
                                 <select className="custom-select"

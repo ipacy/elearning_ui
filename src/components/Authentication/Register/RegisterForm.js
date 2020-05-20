@@ -1,5 +1,7 @@
 import React from "react";
 import icon from "../../../assets/online-learning.png";
+import {PrimaryButton, DefaultButton, TextField} from '@fluentui/react';
+import DialogActions from "@material-ui/core/DialogActions";
 
 const registerForm = (props) => {
     return (
@@ -19,31 +21,45 @@ const registerForm = (props) => {
                 <form className="needs-validation" onSubmit={props.onSubmit}>
                     <div className="row">
                         <div className="col-md-6 mb-3">
-                            <label htmlFor="first_name">First name</label>
+                            {/* <label htmlFor="first_name">First name</label>
                             <input type="text" className="form-control" id="first_name"
                                    placeholder="First name"
                                    required={true}
                                    name="first_name"
                                    value={props.first_name || ""}
-                                   onChange={props.change}/>
+                                   onChange={props.change}/>*/}
+                            <TextField htmlFor="first_name"
+                                       label="First name"
+                                       placeholder="First name"
+                                       required={true}
+                                       name="first_name"
+                                       value={props.first_name || ""}
+                                       onChange={props.change}/>
                             <div className="invalid-feedback">
                                 Valid first name is required.
                             </div>
                         </div>
                         <div className="col-md-6 mb-3">
-                            <label htmlFor="last_name">Last name</label>
+                            {/*<label htmlFor="last_name">Last name</label>
                             <input type="text" className="form-control" id="last_name"
                                    placeholder="Last name"
                                    required={true}
                                    name="last_name"
                                    value={props.last_name || ""}
-                                   onChange={props.change}/>
+                                   onChange={props.change}/>*/}
+                            <TextField htmlFor="last_name"
+                                       label="Last name"
+                                       placeholder="Last name"
+                                       required={true}
+                                       name="last_name"
+                                       value={props.last_name || ""}
+                                       onChange={props.change}/>
                             <div className="invalid-feedback">
                                 Valid last name is required.
                             </div>
                         </div>
                     </div>
-                  {/*  <div className="mb-3">
+                    {/*  <div className="mb-3">
                         <label htmlFor="username">Username</label>
                         <div className="input-group">
                             <div className="input-group-prepend">
@@ -61,25 +77,40 @@ const registerForm = (props) => {
                         </div>
                     </div>*/}
                     <div className="mb-3">
-                        <label htmlFor="email">Email</label>
+                        {/* <label htmlFor="email">Email</label>
                         <input type="email" className="form-control" id="email"
                                placeholder="you@example.com"
                                required={true}
                                name="email"
                                value={props.email || ""}
-                               onChange={props.change}/>
+                               onChange={props.change}/>*/}
+                        <TextField htmlFor="email"
+                                   label="Email"
+                                   placeholder="Email"
+                                   required={true}
+                                   name="email"
+                                   value={props.email || ""}
+                                   onChange={props.change}/>
                         <div className="invalid-feedback">
                             Please enter a valid email address for sign-in.
                         </div>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="password">Password</label>
+                        {/*  <label htmlFor="password">Password</label>
                         <input type="password" className="form-control" id="password"
                                placeholder="******"
                                required aria-describedby="passwordHelpInline"
                                name="password"
                                value={props.password || ""}
-                               onChange={props.change}/>
+                               onChange={props.change}/>*/}
+                        <TextField htmlFor="password"
+                                   label="Password"
+                                   type="password"
+                                   placeholder="Password"
+                                   required={true}
+                                   name="password"
+                                   value={props.password || ""}
+                                   onChange={props.change}/>
                         <small id="passwordHelpInline" className="text-muted">
                             Must be 8-20 characters long.
                         </small>
@@ -107,17 +138,24 @@ const registerForm = (props) => {
                     </div>
                     <div className="row">
                         <div className="col-md-6 mb-3">
-                            <label htmlFor="phone">Phone
+                           {/* <label htmlFor="phone">Phone
                                 <span className="text-muted"> (Optional)</span>
                             </label>
                             <input type="text" className="form-control" id="phone"
                                    placeholder="+01 23456789"
                                    name="phone"
                                    value={props.phone || ""}
-                                   onChange={props.change}/>
+                                   onChange={props.change}/>*/}
+                            <TextField htmlFor="phone"
+                                       label="Phone (Optional)"
+                                       placeholder="+01 23456789"
+                                       required={true}
+                                       name="phone"
+                                       value={props.phone || ""}
+                                       onChange={props.change}/>
                         </div>
                         <div className="col-md-6 mb-3">
-                            <label htmlFor="website">Website <span
+                            {/* <label htmlFor="website">Website <span
                                 className="text-muted"> (Optional)</span></label>
                             <div className="input-group">
                                 <div className="input-group-prepend">
@@ -129,11 +167,20 @@ const registerForm = (props) => {
                                        name="website"
                                        value={props.website || ""}
                                        onChange={props.change}/>
-                            </div>
+                            </div>*/}
+                            <TextField
+                                htmlFor="website"
+                                placeholder="www.website.com"
+                                label="With prefix and suffix"
+                                prefix="https://"
+                                name="website"
+                                ariaLabel="Example text field with https:// prefix"
+                                value={props.website || ""}
+                                onChange={props.change}/>
                         </div>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="qualification">Qualification
+                        {/* <label htmlFor="qualification">Qualification
                             <span className="text-muted"> (Optional)</span>
                         </label>
                         <input type="text" className="form-control"
@@ -141,25 +188,42 @@ const registerForm = (props) => {
                                placeholder="Bachelor of technology in computer science"
                                name="qualification"
                                value={props.qualification || ""}
-                               onChange={props.change}/>
+                               onChange={props.change}/>*/}
+                        <TextField htmlFor="qualification"
+                                   label="Qualification (Optional)"
+                                   placeholder="Bachelor of technology in computer science"
+                                   name="qualification"
+                                   value={props.qualification || ""}
+                                   onChange={props.change}/>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="biography">Biography
+                        {/*  <label htmlFor="biography">Biography
                             <span className="text-muted"> (Optional)</span>
                         </label>
                         <textarea className="form-control" id="biography"
                                   placeholder="Biography"
                                   name="biography"
                                   value={props.biography || ""}
-                                  onChange={props.change}/>
+                                  onChange={props.change}/>*/}
+                        <TextField htmlFor="biography"
+                                   label="Biography (Optional)" multiline rows={3}
+                                   name="biography"
+                                   value={props.biography || ""}
+                                   onChange={props.change}/>
                     </div>
                     <hr className="mb-4"/>
-                    <button className="btn btn-outline-secondary btn-light btn-lg btn-block"
+                    {/*<button className="btn btn-outline-secondary btn-light btn-lg btn-block"
                             type="submit"> Register
-                    </button>
-                    <button className="btn btn-outline-secondary btn-light btn-lg btn-block"
+                    </button>*/}
+                    <DefaultButton
+                        type="submit"> Register
+                    </DefaultButton>
+                    <PrimaryButton onClick={props.handleClose}>
+                        Cancel
+                    </PrimaryButton>
+                    {/*<button className="btn btn-outline-secondary btn-light btn-lg btn-block"
                             onClick={props.handleClose}> Cancel
-                    </button>
+                    </button>*/}
                 </form>
             </div>
         </div>
