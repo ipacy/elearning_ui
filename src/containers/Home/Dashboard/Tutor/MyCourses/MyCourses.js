@@ -8,12 +8,8 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import {connect} from "react-redux";
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import CourseForm from "../../../../../components/Home/Dashboard/Course/CreateCourse/CreateCourse";
-import CourseDialogX from "../../../../../components/Utils/DialogX";
-import LectureDialogX from "../../../../../components/Utils/DialogX";
-import TopicDialogX from "../../../../../components/Utils/DialogX";
-import DialogX from "../../../../../components/Utils/DialogX";
-
-// import Aux from "../../../../../hoc/Aux/Aux";
+import EditCourseForm from "../../../../../components/Home/Dashboard/Course/CreateCourse/CreateCourse";
+import CreateTopic from "../../../../../components/Home/Dashboard/Topic/CreateTopic/CreateTopic";
 
 class MyCourses extends Component {
     state = {
@@ -32,10 +28,53 @@ class MyCourses extends Component {
         },
         courseFormModel: {},
         editCourseFormModel: {},
-        courseFormData: {},
+        courseFormData: {
+            "title": "",
+            "description": "",
+            "language": "",
+            "price": 0,
+            "category": []
+        },
         courseEditData: {},
+        topicFormModel: {},
+        topicFormData: {
+            "currentTopicId": 0,
+            "title": "",
+            "duration": 0
+        },
+        mytopic: {
+            title: '',
+            description: '',
+            lectures: [],
+            lectureFile: {filepaths: []}
+        },
+        lectureList: [],
+        singleLecture: {
+            title: "",
+            description: "",
+            duration: 0,
+            res_file: ""
+        },
+        topicClass: {
+            "defaultClass": {
+                topic: "nav-link active",
+                upload: "nav-link",
+                lecture: "nav-link",
+                topicdiv: "tab-pane fade show active",
+                uploaddiv: "tab-pane fade",
+                lecturediv: "tab-pane fade",
+            },
+            "appliedClass": {
+                topic: "nav-link active",
+                upload: "nav-link",
+                lecture: "nav-link",
+                topicdiv: "tab-pane fade show active",
+                uploaddiv: "tab-pane fade",
+                lecturediv: "tab-pane fade",
+            }
+        },
         categories: [],
-        languages:[]
+        languages: []
     }
 
     componentDidMount() {
@@ -140,7 +179,6 @@ class MyCourses extends Component {
     getTopicDetail = (hash) => {
         const topics = [...this.state.topics];
         const id = hash.split('/')[3];
-        // debugger;
         const topicDetails = topics.find(function (obj) {
             return obj.id === parseInt(id)
         });
@@ -148,54 +186,276 @@ class MyCourses extends Component {
         this.setState({lectures: topicDetails.lectures});
     }
 
-    onNewCourseSubmit = (event) => {
-        event.preventDefault();
-        debugger;
-        const courseData = {...this.state.courseFormData};
-
-        if (courseData.hasOwnProperty('title')) {
-
-            courseData.category = [
-                1
-            ]
-
-            this.setState({courseFormData: courseData});
-
-            axios.post('courses/create/', courseData)
-                .then(response => {
-                    this.setState({courseFormModel: {show: false}});
-                    this.getCourseList();
-                }).catch(error => {
-                const errorMsg = Object.keys(error.response.data)
-                    .map(igKey => {
-                        return error.response.data[igKey]
-                    }).reduce((sum, el) => {
-                        return sum + el;
-                    }, '');
-                this.setState({
-                    error: errorMsg,
-                    modal: {
-                        show: true,
-                        body: errorMsg,
-                        error: errorMsg,
-                        bodyCSS: 'text-error',
-                        title: 'Registration Status'
-                    }
-                })
-            });
+    onNewCourseSubmit = (event, formtype) => {
+        event.preventDefault()
+        let courseData, path;
+        const formData = new FormData();
+        if (formtype === 'editForm') {
+            courseData = {...this.state.courseEditData};
+            let cats = [];
+            for (let i = 0; i < courseData.category.length; i++) {
+                cats.push(courseData.category[i].value)
+            }
+            courseData.category = cats;
+            path = courseData.id;
+            formData.append('title', courseData.title);
+            formData.append('category', courseData.category);
+            formData.append('language', ['1']);
+            formData.append('description', courseData.description);
+            formData.append('price', courseData.price);
+            formData.append('ico', courseData.ico);
         }
+
+        if (formtype === 'createForm') {
+            courseData = {...this.state.courseFormData};
+            let cats = [];
+            for (let i = 0; i < courseData.category.length; i++) {
+                cats.push(courseData.category[i].value)
+            }
+            courseData.category = cats;
+            formData.append('title', courseData.title);
+            formData.append('category', courseData.category);
+            formData.append('language', ['1']);
+            formData.append('description', courseData.description);
+            formData.append('price', courseData.price);
+            formData.append('ico', courseData.ico);
+            path = 'create/';
+
+            if (courseData.hasOwnProperty('title')) {
+
+                this.setState({courseFormData: courseData});
+
+                axios.post('courses/' + path, formData)
+                    .then(response => {
+                        this.setState({courseFormModel: {show: false}});
+                        this.getCourseList();
+                    }).catch(error => {
+                    const errorMsg = Object.keys(error.response.data)
+                        .map(igKey => {
+                            return error.response.data[igKey]
+                        }).reduce((sum, el) => {
+                            return sum + el;
+                        }, '');
+                    this.setState({
+                        error: errorMsg,
+                        modal: {
+                            show: true,
+                            body: errorMsg,
+                            error: errorMsg,
+                            bodyCSS: 'text-error',
+                            title: 'Registration Status'
+                        }
+                    })
+                });
+            }
+        }
+
 
     }
 
     handleCourseChange = (event) => {
         const name = event.target.name;
-        const value = event.target.value;
+        let value;
         const data = {...this.state.courseFormData};
-        data[name] = value;
+
+        switch (name) {
+            case 'ico':
+                value = event.target.files[0];
+                data[name] = value;
+                break;
+            case 'category':
+                value = event.target.selectedOptions;
+                data[name] = value;
+                break;
+            case 'language':
+                value = event.target.selectedOptions;
+                data[name] = value;
+                break;
+            default:
+                value = event.target.value;
+                data[name] = value;
+        }
+
         this.setState({
             courseFormData: data
         });
     };
+
+    handleEditCourseChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        const data = {...this.state.courseEditData};
+        data[name] = value;
+        this.setState({
+            courseEditData: data
+        });
+    };
+
+    handleTopicChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        const data = {...this.state.topicFormData};
+
+        data[name] = value;
+
+        this.setState({
+            topicFormData: data
+        });
+
+    };
+
+    onNewTopicSubmit = (event) => {
+        event.preventDefault()
+
+        let topicData = {...this.state.topicFormData};
+        if (topicData.hasOwnProperty('title')) {
+
+            this.setState({topicFormData: topicData});
+            let sendData = {
+                title: topicData.title,
+                duration: 0,
+                course: this.state.courseDetails.id
+            }
+
+            axios.post('topics/create/', sendData)
+                .then(response => {
+                    this.getCourseList();
+                    try {
+                        this.setState({topicFormData: {currentTopicId: response.data.id}});
+                        this.setState({
+                            topicClass: {
+                                appliedClass: {
+                                    topic: "nav-link disabled",
+                                    upload: "nav-link active",
+                                    lecture: "nav-link disabled",
+                                    topicdiv: "tab-pane fade",
+                                    uploaddiv: "tab-pane fade show active",
+                                    lecturediv: "tab-pane fade"
+                                }
+                            },
+                        })
+                    } catch (e) {
+                    }
+                }).catch(error => {
+                console.log(error);
+            });
+        }
+    }
+
+    onLectureFileSubmit = (event) => {
+        event.preventDefault()
+        const topics = {...this.state.mytopic};
+
+        const hash = this.props.location.hash;
+        topics.course = this.state.courseDetails.id;
+
+        let data = new FormData();
+
+        topics.lecUpload.forEach((obj) => {
+            data.append('lecture_file', obj)
+        })
+
+        data.append('course', this.state.courseDetails.id)
+        data.append('topic', this.state.topicDetails.id)
+
+        axios.post('lectureFiles/', data)
+            .then(response => {
+
+                this.setState({
+                    classes: {
+                        topic: "nav-link disabled",
+                        upload: "nav-link disabled",
+                        lecture: "nav-link active",
+                        topicdiv: "tab-pane fade",
+                        uploaddiv: "tab-pane fade",
+                        lecturediv: "tab-pane fade show active",
+                    },
+                });
+            }).catch(error => {
+            console.log(error);
+        });
+
+    }
+
+    getUploadedFiles = () => {
+        const path = "lectureFiles/?course=" + this.state.courseDetails.id + "&topic=" + this.state.topicDetails.id + ""
+        axios.get(path)
+            .then(response => {
+                const mytopic = {...this.state.mytopic};
+                mytopic.filepaths = response.data;
+                this.setState({mytopic: mytopic})
+            }).catch(error => {
+            this.setState({error: error})
+        });
+    };
+
+    handleLectureFileChange = (event) => {
+        const topic = {...this.state.mytopic};
+        let uploadedFiles = [];
+
+        for (var i = 0; i < event.target.files.length; i++) {
+            uploadedFiles.push(event.target.files[i])
+        }
+
+        topic.lecUpload = uploadedFiles;
+
+        this.setState({
+            mytopic: topic
+        });
+
+    };
+
+    onBatchLectureSubmit = (event) => {
+        event.preventDefault()
+
+        let lectureList = {...this.state.lectureList};
+
+
+        this.setState({lectureList: lectureList});
+        let sendData = lectureList
+        // debugger;
+
+        let sample = {
+            "lectures": [
+                {
+                    "title": "lec5",
+                    "description": "",
+                    "duration": 10,
+                    "topic": 1,
+                    "res_file": 1
+                }
+            ]
+        }
+
+
+      /*  axios.post('nested/create/', sendData)
+            .then(response => {
+                debugger;
+            }).catch(error => {
+            debugger;
+            console.log(error);
+        });*/
+    }
+
+    handleLectureChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        const data = {...this.state.singleLecture};
+
+        data[name] = value;
+
+        this.setState({
+            singleLecture: data
+        });
+    };
+
+
+    addNewLecture = (event) => {
+        let singleLecture = {...this.state.singleLecture};
+        this.state.lectureList.push(singleLecture)
+        // debugger;
+        this.setState({lectureList: [...this.state.lectureList]})
+    }
 
     closeDialog = () => {
         this.setState({courseFormModel: {show: false}})
@@ -218,7 +478,10 @@ class MyCourses extends Component {
                                    ico={course.ico}
                                    price={course.price}
                                    openCourseForm={() => {
-                                       this.setState({editCourseFormModel: {...this.state.model}, courseEditData: course})
+                                       this.setState({
+                                           editCourseFormModel: {...this.state.model},
+                                           courseEditData: course
+                                       })
                                    }}
                                    courseFormModel={this.state.courseFormModel}
                                    onClose={() => {
@@ -232,8 +495,6 @@ class MyCourses extends Component {
                                        this.setState({openCourseForm: evt})
                                    }}
                     />
-
-
                 }) : courses;
 
             topics = (this.state.topics.length > 0) ? this.state.topics.map(
@@ -269,14 +530,6 @@ class MyCourses extends Component {
                         <AddBoxIcon/>
                     </button>
 
-                    <LectureDialogX open={this.state.courseFormModel.show}>
-                        <CourseForm courseFormData={this.state.courseFormData}
-                                    onClose={() => {
-                                        this.setState({courseFormModel: {show: false}})
-                                    }}
-                                    onChange={this.handleCourseChange}
-                                    onSubmit={this.onNewCourseSubmit}/>
-                    </LectureDialogX>
 
                 </li>
                 <div className="list-group bg-dark text-light">
@@ -289,18 +542,42 @@ class MyCourses extends Component {
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     Topics
                     <button onClick={() => {
-                        this.setState({courseFormModel: {...this.state.model}})
+                        this.setState({
+                            topicFormModel: {...this.state.model},
+                            topicClass: {appliedClass: {...this.state.topicClass.defaultClass}}
+                        })
                     }}>
                         <AddBoxIcon/>
                     </button>
-                    <TopicDialogX open={this.state.courseFormModel.show}>
-                        <CourseForm courseFormData={this.state.courseFormData}
-                                    onClose={() => {
-                                        this.setState({courseFormModel: {show: false}})
-                                    }}
-                                    onChange={this.handleCourseChange}
-                                    onSubmit={this.onNewCourseSubmit}/>
-                    </TopicDialogX>
+                    <CreateTopic
+                        title="Create Course"
+                        open={this.state.topicFormModel.show}
+                        singleLecture={this.state.singleLecture}
+                        topicFormData={this.state.topicFormData}
+                        topicClass={this.state.topicClass}
+                        lectureList={this.state.lectureList}
+                        lectureFiles={this.state.mytopic}
+                        onClose={() => {
+                            this.setState({topicFormModel: {show: false}})
+                        }}
+                        onEscape={() => {
+                            this.setState({topicFormModel: {show: false}})
+                        }}
+                        onSubmit={(event) => {
+                            this.onNewTopicSubmit(event, 'createForm')
+                        }}
+                        onLectureFileSubmit={(event) => {
+                            this.onLectureFileSubmit(event, 'createForm')
+                        }}
+                        addLectures={(event) => {
+                            this.addNewLecture(event)
+                        }}
+                        onLectures={this.getUploadedFiles}
+                        onChange={this.handleTopicChange}
+                        onLectureChange={this.handleLectureChange}
+                        onSubmitLectures={this.onBatchLectureSubmit}
+                        handleLectureFileChange={this.handleLectureFileChange}
+                    />
                 </li>
                 <div className="list-group bg-dark text-light">
                     {topics}
@@ -313,26 +590,28 @@ class MyCourses extends Component {
                     Courses
                     <button onClick={() => {
                         this.setState({courseFormModel: {...this.state.model}})
-                    }}>
-                        <AddBoxIcon/>
+                    }}><AddBoxIcon/>
                     </button>
 
-                    <CourseDialogX open={this.state.courseFormModel.show}>
-                        <CourseForm courseFormData={this.state.courseFormData}
-                                    onClose={() => {
-                                        this.setState({courseFormModel: {show: false}})
-                                    }}
-                                    onChange={this.handleCourseChange}
-                                    onSubmit={this.onNewCourseSubmit}/>
-
-
-                    </CourseDialogX>
+                    <CourseForm
+                        title="Create Course"
+                        open={this.state.courseFormModel.show}
+                        courseFormData={this.state.courseFormData}
+                        languages={this.state.languages}
+                        categories={this.state.categories}
+                        onClose={() => {
+                            this.setState({courseFormModel: {show: false}})
+                        }}
+                        onEscape={this.closeDialog}
+                        onSubmit={(event) => {
+                            this.onNewCourseSubmit(event, 'createForm')
+                        }}
+                        onChange={this.handleCourseChange}/>
                 </li>
                 <div className="list-group bg-dark text-light">
                     {courses}
                 </div>
             </div>;
-
 
         return (
             <div className="container mt-4">
@@ -358,17 +637,20 @@ class MyCourses extends Component {
 
                 </div>
 
-                <DialogX open={this.state.editCourseFormModel.show}
-                         title="Edit Course"
-                         onEscape={this.closeDialog}
-                         onClose={this.closeDialog}>
-                    <CourseForm courseFormData={this.state.courseEditData}
-                                categories={this.state.categories}
-                                languages={this.state.languages}
-                                onClose={this.closeDialog}
-                                onSubmit={this.onNewCourseSubmit}
-                                onChange={this.handleCourseChange}/>
-                </DialogX>
+                <EditCourseForm
+                    open={this.state.editCourseFormModel.show}
+                    title="Edit Course"
+                    courseFormData={this.state.courseEditData}
+                    languages={this.state.languages}
+                    categories={this.state.categories}
+                    onClose={() => {
+                        this.setState({editCourseFormModel: {show: false}})
+                    }}
+                    onEscape={this.closeDialog}
+                    onSubmit={(event) => {
+                        this.onNewCourseSubmit(event, 'editForm')
+                    }}
+                    onChange={this.handleEditCourseChange}/>
             </div>
         )
 

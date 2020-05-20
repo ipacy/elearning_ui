@@ -9,6 +9,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 
 
 class Login extends Component {
+
     state = {
         open: false,
         error: null,
@@ -91,18 +92,15 @@ class Login extends Component {
 
 
     render() {
-        let log = (<Log
-            email={this.state.logData.email}
-            password={this.state.logData.password}
-            error={this.state.error}
-            onSubmit={(evt) => this.handleLogin(evt)}
-            handleClose={(evt) => this.handleClose(evt)}
-            change={(evt) => this.handleChange(evt)}
-        />)
+        let log = <Log
+                        email={this.state.logData.email}
+                        password={this.state.logData.password}
+                        error={this.state.error}
+                        onSubmit={(evt) => this.handleLogin(evt)}
+                        handleClose={(evt) => this.handleClose(evt)}
+                        change={(evt) => this.handleChange(evt)}/>
         const showDia = !!this.state.open;
         return (
-
-
             <Dialog fullWidth={true} open={showDia} onClose={this.handleClose}
                     aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>

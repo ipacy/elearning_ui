@@ -20,25 +20,27 @@ class App extends Component {
 
     render() {
         let UserType = <LoadingOverlay
-            active={true}
-            spinner
-            text='Loading your content...'>
-            <p>Some content or children or something.</p>
-        </LoadingOverlay>
+                            active={true}
+                            spinner
+                            text='Loading your content...'>
+                            <p>Some content or children or something.</p>
+                        </LoadingOverlay>
 
         if (this.props.group === "tutor") {
             UserType = <Route path="/" exact component={Dashboard}/>;
         } else if (this.props.group === 'student') {
             UserType = <Route path="/" exact component={Courses}/>;
+        } else {
+            UserType = <Route path="/" exact component={Courses}/>;
         }
-        let mainApp = <Layout>
-            <Switch>
-                <Route path="/course/:id" component={CourseDetail}/>
-                <Route path="/register" component={Register}/>
-                <Route path="/mycourses" component={MyCourses}/>
-                {UserType}
-            </Switch>
-        </Layout>
+
+        let mainApp = <Switch>
+                        <Route path="/course/:id" component={CourseDetail}/>
+                        <Route path="/register" component={Register}/>
+                        <Route path="/mycourses" component={MyCourses}/>
+                        {UserType}
+                      </Switch>
+
         if (this.props.group === "load") {
             mainApp = UserType
         }
@@ -46,7 +48,9 @@ class App extends Component {
 
         return (
             <div>
-                {mainApp}
+                <Layout>
+                    {mainApp}
+                </Layout>
             </div>
         );
     }

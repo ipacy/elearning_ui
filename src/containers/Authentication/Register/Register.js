@@ -51,7 +51,7 @@ class Register extends Component {
         regObj['username'] = regObj.email.split('@')[0];
         this.setState({regData: regObj});
 
-        axios.post('/users/', this.state.regData)
+        axios.post('/users/', regObj)
             .then(response => {
                 this.setState({
                     modal: {
